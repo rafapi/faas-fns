@@ -1,0 +1,10 @@
+version: 1.0
+provider:
+  name: openfaas
+  gateway: https://faas.pardinas.co.uk
+functions:
+  sentiment-analysis:
+    lang: python3-debian
+    handler: ./sentiment-analysis
+    image: docker-reg.pardinas.co.uk/sentiment-analysis:latest
+
