@@ -1,2 +1,1 @@
-# faas-fns
-FaaS functions
+# FaaS functions
