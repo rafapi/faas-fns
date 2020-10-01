@@ -1,0 +1,4 @@
+recipe-scrapers
+Markdown==3.2.2
+python-slugify
+pymdown-extensions
