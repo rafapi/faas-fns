@@ -4,7 +4,7 @@ provider:
   gateway: https://faas.pardinas.co.uk
 functions:
   sentiment-analysis:
-    lang: python3-debian
+    lang: python3
     handler: ./sentiment-analysis
     image: docker-reg.pardinas.co.uk/sentiment-analysis:latest
 
