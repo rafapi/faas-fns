@@ -1,4 +1,3 @@
-import os
 import requests
 import sys
 
@@ -9,17 +8,21 @@ def handle(req):
         req (str): request body
     """
 
-    gateway_hostname = 'gateway.openfaas'
+    gateway_socket = 'gateway.openfaas:8080'
+    remote_fun = "/function/sentiment-analysis"
 
-    test_sentence = req
+    data = req.encode('utf-8')
 
-    r = requests.get("http://" + gateway_hostname + ":8080/function/sentimentanalysis", data=test_sentence)
+    r = requests.get("http://" + gateway_socket + remote_fun, data=data)
 
     if r.status_code != 200:
-        sys.exit("Error with sentimentanalysis, expected: %d, got: %d\n" % (200, r.status_code))
+        sys.exit(f"Error calling func, expected: 200, got: {r.status_code}")
 
     result = r.json()
+
     if result["polarity"] > 0.45:
-        return "That was probably positive"
+        return "Possitive comment"
+    elif result['polarity'] <= 0.45 and result['polarity'] > -0.2:
+        return 'Neutral comment'
     else:
-        return "That was neutral or negative"
+        return "Negative comment"
