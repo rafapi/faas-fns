@@ -1,3 +1,4 @@
+import json
 import nltk
 from textblob import TextBlob
 
@@ -15,9 +16,6 @@ def handle(req):
     finally:
         blob = TextBlob(req)
 
-    res = {'polarity': 0}
+    res = {'polarity': blob.sentiment.polarity}
 
-    for sentence in blob.sentences:
-        res['polarity'] += sentence.sentiment.polarity
-
-    return {"polarity": res["polarity"]}
+    return json.dumps(res)
