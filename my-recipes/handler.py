@@ -44,7 +44,8 @@ class Recipe:
                           for num, item in enumerate(
                               self.recipe['instructions'])])
 
-        return f"{title}\n\n {img}"
+        for i in [title, img, time, ingr_t, ingr, instr_t, instr]:
+            return f"{i} + '\n\n'"
 
 
 def handle(req):
