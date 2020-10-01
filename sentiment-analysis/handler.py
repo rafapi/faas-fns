@@ -1,3 +1,4 @@
+import nltk
 from textblob import TextBlob
 
 
@@ -6,7 +7,13 @@ def handle(req):
     Args:
         req (str): request body
     """
-    blob = TextBlob(req)
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt')
+
+    finally:
+        blob = TextBlob(req)
 
     res = {'polarity': 0}
 
