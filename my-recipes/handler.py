@@ -34,7 +34,7 @@ class Recipe:
 
     def make_md(self):
         title = f"## {self.recipe['title']}"
-        img = f"![Recipe picture]({self.recipe['image']})"
+        img = f"![Recipe picture]({self.recipe['image']})""{ width=50% }"
         time = f"Prep time: **{self.recipe['time']}** \
                 [{self.recipe['serves']}]"
         ingr_t = '### Ingredients'
@@ -44,8 +44,11 @@ class Recipe:
                           for num, item in enumerate(
                               self.recipe['instructions'])])
 
+        recipe = ""
         for i in [title, img, time, ingr_t, ingr, instr_t, instr]:
-            return f"{i} + '\n\n'"
+            recipe += f"{i}" + '\n\n'
+
+        return recipe
 
 
 def handle(req):
@@ -53,6 +56,7 @@ def handle(req):
     Args:
         req (str): request body
     """
+    req = 'King Prawn Paella With Lemon Aioli'
     recipe = Recipe(req)
 
     md = markdown.Markdown(extensions=[
