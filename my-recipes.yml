@@ -7,4 +7,5 @@ functions:
     lang: python3-flask-debian
     handler: ./my-recipes
     image: docker-reg.pardinas.co.uk/my-recipes:latest
-
+    environment:
+      content_type: text/html
