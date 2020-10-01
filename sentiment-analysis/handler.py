@@ -20,4 +20,4 @@ def handle(req):
     for sentence in blob.sentences:
         res['polarity'] += sentence.sentiment.polarity
 
-    return {'polarity': res['polarity']}
+    return {"polarity": res["polarity"]}
