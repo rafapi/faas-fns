@@ -1,5 +1,7 @@
+import sys
 import markdown
 
+from flask import request, abort
 from recipe_scrapers import scrape_me, WebsiteNotImplementedError
 from slugify import slugify
 
@@ -56,8 +58,25 @@ def handle(req):
     Args:
         req (str): request body
     """
-    req = 'King Prawn Paella With Lemon Aioli'
-    recipe = Recipe(req)
+    # req = 'King Prawn Paella With Lemon Aioli'
+
+    favourites = {
+            "Aubergine Curry": "Thai Aubergine Curry With Sticky Rice",
+            "Italian Burger": "Italian Vegan Burger With Olive & Basil Tapenade",
+            "Prawn Paella": "King Prawn Paella With Lemon Aioli"
+            }
+
+    query = request.args.get('recipe')
+
+    if not query:
+        abort(404)
+
+    try:
+        choice = favourites.get(query.title(), "")
+    except TimeoutError:
+        raise Exception('Timeout trying to get request.')
+
+    recipe = Recipe(choice)
 
     md = markdown.Markdown(extensions=[
         'markdown.extensions.meta',
