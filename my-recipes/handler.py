@@ -1,9 +1,33 @@
-import sys
 import markdown
+import sys
 
-from flask import request, abort
+from flask import request, Markup, render_template
 from recipe_scrapers import scrape_me, WebsiteNotImplementedError
 from slugify import slugify
+
+
+favourites = {
+        "1": "Thai Aubergine Curry With Sticky Rice",
+        "2": "Italian Vegan Burger With Olive & Basil Tapenade",
+        "3": "King Prawn Paella With Lemon Aioli",
+        "4": "Smoked Mackerel Fishcakes & Apple Remoulade",
+        "5": "Salmon & Sugar Snap Risotto",
+        "6": "Butternut Squash, Lentil & Coconut Dal",
+        "7": "Easy One-Pot Haddock & Leek Risotto",
+        "8": "Warm Halloumi Salad With Green Tomato Dressing",
+        "9": "10-Min Salmon With Spinach & Lemon Gnocchi",
+        "10": "10-Min Spiced Lentil Stew & Chilli-Peanut Crumb",
+        "11": "10-Min Spicy Halloumi Stew With Couscous",
+        "12": "Mushroom & Thyme Fusilloni",
+        "13": "10-Min Tomato & Goat's Cheese Gnocchi",
+        "14": "Pistachio & Cranberry Nut Roast",
+        "15": "10-Min Mushroom Biryani With Cucumber Raita",
+        "16": "Burrata-Topped Tomato Risotto With Basil Oil",
+        "17": " Saffron, Crab & Clotted Cream Risotto",
+        "18": "Fragant Thai Crab Rice With Lime",
+        "19": "Crispy Tofu, Satay Sauce & Sesame Rice",
+        "20": "The Ultimate Veggie Cheeseburger & Tomato Relish"
+        }
 
 
 class Recipe:
@@ -36,7 +60,7 @@ class Recipe:
 
     def make_md(self):
         title = f"## {self.recipe['title']}"
-        img = f"![Recipe picture]({self.recipe['image']})""{ width=50% }"
+        img = f"![Recipe picture]({self.recipe['image']})""{ width=100% }"
         time = f"Prep time: **{self.recipe['time']}** \
                 [{self.recipe['serves']}]"
         ingr_t = '### Ingredients'
@@ -53,29 +77,7 @@ class Recipe:
         return recipe
 
 
-def handle(req):
-    """handle a request to the function
-    Args:
-        req (str): request body
-    """
-    # req = 'King Prawn Paella With Lemon Aioli'
-
-    favourites = {
-            "Aubergine Curry": "Thai Aubergine Curry With Sticky Rice",
-            "Italian Burger": "Italian Vegan Burger With Olive & Basil Tapenade",
-            "Prawn Paella": "King Prawn Paella With Lemon Aioli"
-            }
-
-    query = request.args.get('recipe')
-
-    if not query:
-        abort(404)
-
-    try:
-        choice = favourites.get(query.title(), "")
-    except TimeoutError:
-        raise Exception('Timeout trying to get request.')
-
+def _parse_markdown(choice):
     recipe = Recipe(choice)
 
     md = markdown.Markdown(extensions=[
@@ -89,3 +91,24 @@ def handle(req):
         ])
 
     return md.convert(recipe.make_md())
+
+
+def handle(event, context):
+    """handle a request to the function
+    Args:
+        req (str): request body
+    """
+
+    query = event.query.get('recipe')
+
+    if not query:
+        choice = "Fake Recipe"
+    else:
+        choice = favourites.get(query.title(), "")
+
+    rendered = Markup(_parse_markdown(choice))
+
+    return {
+            "statusCode": 200,
+            "body": rendered
+            }
