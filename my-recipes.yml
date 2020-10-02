@@ -4,8 +4,9 @@ provider:
   gateway: https://faas.pardinas.co.uk
 functions:
   my-recipes:
-    lang: python3-flask-debian
+    lang: python3-http-debian
     handler: ./my-recipes
     image: docker-reg.pardinas.co.uk/my-recipes:latest
     environment:
+      write_debug: true
       content_type: text/html
