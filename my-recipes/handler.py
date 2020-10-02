@@ -1,7 +1,6 @@
 import markdown
-import sys
 
-from flask import request, Markup, render_template
+from flask import Markup
 from recipe_scrapers import scrape_me, WebsiteNotImplementedError
 from slugify import slugify
 
@@ -98,7 +97,6 @@ def handle(event, context):
     Args:
         req (str): request body
     """
-
     query = event.query.get('recipe')
 
     if not query:
