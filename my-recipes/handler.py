@@ -102,13 +102,17 @@ def handle(event, context):
     query = event.query.get('recipe')
 
     if not query:
-        choice = "Fake Recipe"
-    else:
+        rendered = "<h2>Incomplete URL</h2>"
+        status_code = 404
+    elif query in favourites:
         choice = favourites.get(query.title(), "")
-
-    rendered = Markup(_parse_markdown(choice))
+        rendered = Markup(_parse_markdown(choice))
+        status_code = 200
+    else:
+        rendered = "<h2>Value no found</h2>"
+        status_code = 404
 
     return {
-            "statusCode": 200,
+            "statusCode": status_code,
             "body": rendered
             }
