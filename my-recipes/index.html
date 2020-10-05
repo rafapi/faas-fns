@@ -686,11 +686,11 @@
   clear: both;
 }
 
-.markdown-body:first-child {
+.markdown-body>:first-child {
   margin-top: 0!important;
 }
 
-.markdown-body:last-child {
+.markdown-body>:last-child {
   margin-bottom: 0!important;
 }
 
@@ -725,11 +725,11 @@
   border-left: .25em solid #dfe2e5;
 }
 
-.markdown-body blockquote:first-child {
+.markdown-body blockquote>:first-child {
   margin-top: 0;
 }
 
-.markdown-body blockquote:last-child {
+.markdown-body blockquote>:last-child {
   margin-bottom: 0;
 }
 
@@ -793,7 +793,7 @@
   word-wrap: break-all;
 }
 
-.markdown-body lip {
+.markdown-body li>p {
   margin-top: 16px;
 }
 
@@ -869,7 +869,7 @@
   word-wrap: normal;
 }
 
-.markdown-body precode {
+.markdown-body pre>code {
   padding: 0;
   margin: 0;
   font-size: 100%;
