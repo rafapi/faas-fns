@@ -1,7 +1,33 @@
 import markdown
+import os
 
+from flask import Markup, render_template_string
 from recipe_scrapers import scrape_me, WebsiteNotImplementedError
 from slugify import slugify
+
+
+favourites = {
+        "1": "Thai Aubergine Curry With Sticky Rice",
+        "2": "Italian Vegan Burger With Olive & Basil Tapenade",
+        "3": "King Prawn Paella With Lemon Aioli",
+        "4": "Smoked Mackerel Fishcakes & Apple Remoulade",
+        "5": "Salmon & Sugar Snap Risotto",
+        "6": "Butternut Squash, Lentil & Coconut Dal",
+        "7": "Easy One-Pot Haddock & Leek Risotto",
+        "8": "Warm Halloumi Salad With Green Tomato Dressing",
+        "9": "10-Min Salmon With Spinach & Lemon Gnocchi",
+        "10": "10-Min Spiced Lentil Stew & Chilli-Peanut Crumb",
+        "11": "10-Min Spicy Halloumi Stew With Couscous",
+        "12": "Mushroom & Thyme Fusilloni",
+        "13": "10-Min Tomato & Goat's Cheese Gnocchi",
+        "14": "Pistachio & Cranberry Nut Roast",
+        "15": "10-Min Mushroom Biryani With Cucumber Raita",
+        "16": "Burrata-Topped Tomato Risotto With Basil Oil",
+        "17": " Saffron, Crab & Clotted Cream Risotto",
+        "18": "Fragant Thai Crab Rice With Lime",
+        "19": "Crispy Tofu, Satay Sauce & Sesame Rice",
+        "20": "The Ultimate Veggie Cheeseburger & Tomato Relish"
+        }
 
 
 class Recipe:
@@ -34,7 +60,7 @@ class Recipe:
 
     def make_md(self):
         title = f"## {self.recipe['title']}"
-        img = f"![Recipe picture]({self.recipe['image']})"
+        img = f"![Recipe picture]({self.recipe['image']})""{ width=100% }"
         time = f"Prep time: **{self.recipe['time']}** \
                 [{self.recipe['serves']}]"
         ingr_t = '### Ingredients'
@@ -44,16 +70,15 @@ class Recipe:
                           for num, item in enumerate(
                               self.recipe['instructions'])])
 
+        recipe = ""
         for i in [title, img, time, ingr_t, ingr, instr_t, instr]:
-            return f"{i} + '\n\n'"
+            recipe += f"{i}" + '\n\n'
+
+        return recipe
 
 
-def handle(req):
-    """handle a request to the function
-    Args:
-        req (str): request body
-    """
-    recipe = Recipe(req)
+def _parse_markdown(choice):
+    recipe = Recipe(choice)
 
     md = markdown.Markdown(extensions=[
         'markdown.extensions.meta',
@@ -66,3 +91,36 @@ def handle(req):
         ])
 
     return md.convert(recipe.make_md())
+
+
+def handle(event, context):
+    """handle a request to the function
+    Args:
+        req (str): request body
+    """
+    dirname = os.path.dirname(__file__)
+    path = os.path.join(dirname, 'index.html')
+
+    with open(path) as index:
+        html = index.read()
+
+    query = event.query.get('recipe')
+
+    if not query:
+        content = "<h2>Incomplete URL</h2>"
+        rendered = render_template_string(html, rendered=content)
+        status_code = 404
+    elif query in favourites:
+        choice = favourites.get(query.title(), "")
+        md_content = Markup(_parse_markdown(choice))
+        rendered = render_template_string(html, rendered=md_content)
+        status_code = 200
+    else:
+        content = "<h2>Value no found</h2>"
+        rendered = render_template_string(html, rendered=content)
+        status_code = 404
+
+    return {
+            "statusCode": status_code,
+            "body": rendered
+            }

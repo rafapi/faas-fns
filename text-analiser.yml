@@ -1,10 +1,10 @@
 version: 1.0
 provider:
   name: openfaas
-  gateway: https://faas.pardinas.co.uk
+  gateway: http://127.0.0.1:8080
 functions:
   text-analiser:
     lang: python3
     handler: ./text-analiser
-    image: docker-reg.pardinas.co.uk/text-analiser:latest
+    image: text-analiser:latest
 

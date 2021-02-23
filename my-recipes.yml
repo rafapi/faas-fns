@@ -1,10 +1,12 @@
 version: 1.0
 provider:
   name: openfaas
-  gateway: https://faas.pardinas.co.uk
+  gateway: http://127.0.0.1:8080
 functions:
   my-recipes:
-    lang: python3-flask-debian
+    lang: python3-http-debian
     handler: ./my-recipes
-    image: docker-reg.pardinas.co.uk/my-recipes:latest
-
+    image: my-recipes:latest
+    environment:
+      write_debug: true
+      content_type: text/html
