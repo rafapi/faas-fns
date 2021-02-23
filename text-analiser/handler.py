@@ -8,10 +8,10 @@ def handle(req):
         req (str): request body
     """
 
-    gateway_socket = 'gateway.openfaas:8080'
+    gateway_socket = "gateway.openfaas:8080"
     remote_fun = "/function/sentiment-analysis"
 
-    data = req.encode('utf-8')
+    data = req.encode("utf-8")
 
     r = requests.get("http://" + gateway_socket + remote_fun, data=data)
 
@@ -21,8 +21,10 @@ def handle(req):
     result = r.json()
 
     if result["polarity"] > 0.45:
-        return "Possitive comment"
-    elif result['polarity'] <= 0.45 and result['polarity'] > -0.2:
-        return 'Neutral comment'
+        return "Positive comment"
+
+    elif result["polarity"] <= 0.45 and result["polarity"] > -0.2:
+        return "Neutral comment"
+
     else:
         return "Negative comment"
