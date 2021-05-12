@@ -1,3 +1,3 @@
 # FaaS functions
 
-Collection of OpenFaaS serverless functions
+Collection of OpenFaaS serverless functions.
